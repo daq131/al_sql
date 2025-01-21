@@ -1,5 +1,5 @@
 from sqlalchemy import Table, Column, Integer, String, MetaData, Float, ForeignKey
-from sqlalchemy import create_engine, inspect, insert
+from sqlalchemy import create_engine, inspect, insert, text
 
 
 engine = create_engine('sqlite:///database.db')
@@ -24,7 +24,7 @@ measures_table = Table('measures', meta,
                        Column('tobs', Integer),
                        )
 # print(repr(meta.tables['stations']))
-print(stations_table.columns.keys())
+# print(stations_table.columns.keys())
 # print(measures_table.columns)
 # print(stations_table.columns)
 meta.create_all(engine)
@@ -62,24 +62,29 @@ conn.execute(mns, [
 #
 s = stations_table.select().where(stations_table.c.id > 5)
 results = conn.execute(s)
-for row in results:
-    print(row)
+# for row in results:
+#     print(row)
 #
 t = measures_table.select().where(measures_table.c.tobs > 65)
 results2 = conn.execute(t)
-for row in results2:
-    print(row)
+# for row in results2:
+#     print(row)
 
 all = conn.execute(measures_table.select()).fetchall()
-print(all)
+# print(all)
 query = stations_table.select()
-print(query)
+# print(query)
 exe = conn.execute(query)
 results = exe.fetchmany(5)
-print(results)
+# print(results)
 
 # conn.execute("SELECT * FROM stations LIMIT 5").fetchall()
-# limit = conn.execute(measures_table.select()).limit(5)
-# print(limit)
-# output = conn.execute("SELECT * FROM stations_table")
-# print(output.fetchall())
+limit = conn.execute(measures_table.select().limit(5))
+# for row in limit:
+#     print(row)
+
+query2 = "SELECT * FROM stations LIMIT 5;"
+res = conn.execute(text(query2)).fetchall()
+print(res)
+# for row in res:
+#     print(row)
